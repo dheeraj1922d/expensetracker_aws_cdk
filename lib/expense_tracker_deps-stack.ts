@@ -91,17 +91,24 @@ export class ExpenseTrackerServices extends cdk.Stack {
         });
 
         kafkaTaskDefination.addContainer('KafkaContainer', {
-            image: ContainerImage.fromRegistry('confluentinc/cp-kafka:7.4.4'), // Use Confluent Kafka image
+            image: ContainerImage.fromRegistry('confluentinc/cp-kafka:7.4.4'),
             environment: {
                 KAFKA_BROKER_ID: "1",
-                KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-service.local:2181', // Zookeeper connection
-                KAFKA_ADVERTISED_LISTENERS: `PLAINTEXT://${nlb.loadBalancerDnsName}:9092`, // Expose Kafka broker via NLB
+                KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-service.local:2181',
+                KAFKA_ADVERTISED_LISTENERS: `PLAINTEXT://${nlb.loadBalancerDnsName}:9092`,
                 KAFKA_LISTENERS: 'PLAINTEXT://:9092',
                 KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT',
                 KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT',
-                KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '3', // Replication factor for Kafka
+                KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1',
+                KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true',
+                KAFKA_NUM_PARTITIONS: '3',
+                KAFKA_DEFAULT_REPLICATION_FACTOR: '1',
+                KAFKA_MIN_INSYNC_REPLICAS: '1',
+                KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: 'false',
+                KAFKA_BROKER_RACK: 'RACK1'
             },
-            portMappings: [{ containerPort: 9092 }], // Map container port 9092 for Kafka
+            portMappings: [
+                { containerPort: 9092 }],
             logging: LogDrivers.awsLogs({
                 streamPrefix: 'Kafka',
                 mode: AwsLogDriverMode.NON_BLOCKING,
@@ -116,6 +123,7 @@ export class ExpenseTrackerServices extends cdk.Stack {
             desiredCount: 1, // Run 1 MySQL container
             securityGroups: [dbSecurityGroup],
             vpcSubnets: { subnets: [privateSubnet1, privateSubnet2] },
+            enableExecuteCommand: true, // Enable remote execution for MySQL service
         });
 
         const zookeeperService = new FargateService(this, 'ZookeeperService', {
@@ -132,9 +140,12 @@ export class ExpenseTrackerServices extends cdk.Stack {
         const kafkaService = new FargateService(this, 'KafkaService', {
             cluster,
             taskDefinition: kafkaTaskDefination,
-            desiredCount: 3, // Run 3 Kafka containers
+            desiredCount: 3,
             securityGroups: [dbSecurityGroup],
             vpcSubnets: { subnets: [privateSubnet1, privateSubnet2] },
+            cloudMapOptions: {
+                name: 'kafka-service'
+            }
         });
 
         // Create target groups for MySQL and Kafka services

@@ -90,6 +90,7 @@ export class ExpenseBackendServices extends cdk.Stack {
 
         const kongServiceImage = new assets.DockerImageAsset(this, "KongServiceImage", {
             directory: path.join(__dirname, "..", "..", "expenseTrackerDeps", "kong"),
+            exclude: ['logs/*'],
             platform: assets.Platform.LINUX_AMD64,
             buildArgs: {
                 BUILDKIT_INLINE_CACHE: "1"
@@ -426,8 +427,7 @@ export class ExpenseBackendServices extends cdk.Stack {
                 subnets: [publicSubnet1, publicSubnet2]
             },
             assignPublicIp: true,
-        });     
-   
+        });        
 
         
         const kongALB = new elbv2.ApplicationLoadBalancer(this, 'KongALB', {

@@ -1,0 +1,57 @@
+{
+  "availability-zones:account=307946641397:region=ap-south-1": [
+    "ap-south-1a",
+    "ap-south-1b",
+    "ap-south-1c"
+  ],
+  "ssm:account=307946641397:parameterName=VpcId:region=ap-south-1": "vpc-0ad5073e1ad1ce580",
+  "ssm:account=307946641397:parameterName=PrivateSubnet-0:region=ap-south-1": "subnet-02e58bc7a6f2339e8",
+  "ssm:account=307946641397:parameterName=PrivateSubnet-1:region=ap-south-1": "subnet-0962b6c62ecbb53cf",
+  "ssm:account=307946641397:parameterName=PublicSubnet-0:region=ap-south-1": "subnet-04ceb8bb9e56e4999",
+  "ssm:account=307946641397:parameterName=PublicSubnet-1:region=ap-south-1": "subnet-0fa19cbb6e7fe1641",
+  "ssm:account=307946641397:parameterName=ExpenseTrackerServicesNLB:region=ap-south-1": "Expens-Datab-v82YaOVdAMn4-8b1c3ba60c08b073.elb.ap-south-1.amazonaws.com",
+  "vpc-provider:account=307946641397:filter.vpc-id=vpc-0ad5073e1ad1ce580:region=ap-south-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0ad5073e1ad1ce580",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "ownerAccountId": "307946641397",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "private-subnet",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-02e58bc7a6f2339e8",
+            "cidr": "10.0.2.0/24",
+            "availabilityZone": "ap-south-1a",
+            "routeTableId": "rtb-0cbcb1b1386ba1a2c"
+          },
+          {
+            "subnetId": "subnet-0962b6c62ecbb53cf",
+            "cidr": "10.0.3.0/24",
+            "availabilityZone": "ap-south-1b",
+            "routeTableId": "rtb-0b7339e75fcb7bf0f"
+          }
+        ]
+      },
+      {
+        "name": "public-subnet",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-04ceb8bb9e56e4999",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "ap-south-1a",
+            "routeTableId": "rtb-04b0595ad664e8993"
+          },
+          {
+            "subnetId": "subnet-0fa19cbb6e7fe1641",
+            "cidr": "10.0.1.0/24",
+            "availabilityZone": "ap-south-1b",
+            "routeTableId": "rtb-0b26b48d95f7af188"
+          }
+        ]
+      }
+    ]
+  }
+}
